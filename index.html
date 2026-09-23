@@ -3,315 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GT 비전 2030+ 퀘스트</title>
-    <!-- Tailwind CSS -->
+    <title>GT 비전 문제은행 모의고사</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gt: { 900: '#0f2347', 800: '#1b3b6f', 500: '#2196f3', gospel: '#8367c7', nurture: '#48a999', community: '#f76c5e' }
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out forwards',
-                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
-                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
-        body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 10px 40px rgba(15, 35, 71, 0.08); border: 1px solid rgba(255,255,255,0.6); }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        .stage-view { display: none; }
-        .stage-view.active { display: block; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #e2e8f0; }
+        .cbt-card { background: #ffffff; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); }
+        .opt-btn { transition: all 0.2s; }
+        .opt-btn:hover:not(:disabled) { border-color: #3b82f6; background-color: #eff6ff; transform: translateX(4px); }
+        .opt-correct { background-color: #dcfce7; border-color: #22c55e; color: #166534; font-weight: bold; }
+        .opt-wrong { background-color: #fee2e2; border-color: #ef4444; color: #991b1b; }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative">
+    <div class="w-full max-w-2xl cbt-card rounded-2xl overflow-hidden border border-slate-300">
         
-        <!-- Progress Bar (동적 업데이트) -->
-        <div id="progress-container" class="hidden flex gap-2 mb-8 animate-fade-in">
-            <div id="prog-1" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
-            <div id="prog-2" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
-            <div id="prog-3" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
-        </div>
-
-        <!-- Stage 0: Intro -->
-        <div id="stage-0" class="stage-view active animate-fade-in text-center py-8">
-            <div class="w-16 h-16 bg-gradient-to-br from-gt-800 to-gt-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg rotate-3">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        <!-- Header -->
+        <div class="bg-blue-800 text-white p-5 flex justify-between items-center border-b-4 border-blue-600">
+            <div>
+                <h1 class="font-bold text-xl">GT 교사선교사 CBT 모의고사</h1>
+                <p class="text-xs text-blue-200 mt-1">문제은행 랜덤 출제 시스템 (총 35문항 보유)</p>
             </div>
-            <h1 class="text-3xl font-extrabold text-gt-900 mb-3">GT Vision 2030+</h1>
-            <p class="text-slate-500 text-sm mb-10 leading-relaxed">하나님의 심정을 품은 교사선교사 퀘스트.<br>선생님의 성함을 입력하고 여정을 시작하세요.</p>
-            <input type="text" id="user-name" placeholder="선생님의 이름" class="w-full text-center px-6 py-4 rounded-xl border-2 border-slate-200 focus:border-gt-500 focus:ring-4 focus:ring-gt-500/20 outline-none transition-all text-lg font-bold mb-4" />
-            <button onclick="nextStage(1)" class="w-full bg-gt-800 text-white py-4 rounded-xl font-bold text-lg hover:bg-gt-900 transition-colors shadow-lg shadow-gt-800/30">퀘스트 출항하기</button>
-        </div>
-
-        <!-- Stage 1: Identity -->
-        <div id="stage-1" class="stage-view animate-slide-up space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 1. 부르심의 뿌리</span>
-                <h2 class="text-2xl font-bold text-gt-900">하나님의 심정이란?</h2>
-                <p class="text-sm text-slate-500">GT 표어에 담긴 참된 의미를 찾아보세요.</p>
-            </div>
-            <div class="space-y-3 mt-8" id="stage1-options">
-                <button onclick="checkStage1(0, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">아이들의 감정에 무조건적으로 공감하는 심리적 태도</button>
-                <button onclick="checkStage1(1, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">죄로 무너진 세상을 구원하시는 하나님의 섭리와 긍휼에 반응하는 소명</button>
-                <button onclick="checkStage1(2, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">학교 행정 시스템을 기독교적으로 개혁하려는 정치적 의지</button>
-            </div>
-            <div id="stage1-feedback" class="hidden p-4 rounded-xl animate-fade-in mt-4">
-                <p id="stage1-msg" class="text-sm leading-relaxed text-slate-700"></p>
-                <button id="stage1-next-btn" onclick="nextStage(2)" class="hidden mt-4 w-full bg-gt-800 text-white py-3 rounded-lg font-bold hover:bg-gt-900 transition-colors">다음 미션으로</button>
+            <div class="text-center bg-blue-900 rounded-lg px-4 py-2 border border-blue-700">
+                <div class="text-xs text-blue-300">내 점수</div>
+                <div class="font-bold text-2xl text-white" id="score-display">0</div>
             </div>
         </div>
 
-        <!-- Stage 2: Vision 2030+ -->
-        <div id="stage-2" class="stage-view animate-slide-up space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 2. 비전 아키텍처</span>
-                <h2 class="text-2xl font-bold text-gt-900">비전 2030+ 매칭</h2>
-                <p class="text-sm text-slate-500">3대 핵심가치에 올바른 선언문을 연결하세요.</p>
-            </div>
-            <div class="space-y-4 mt-6">
-                <!-- 복음 -->
-                <div id="box-gospel" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
-                    <h3 class="font-bold text-lg mb-3">복음</h3>
-                    <select id="sel-gospel" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
-                        <option value="">이 가치의 선언문은 무엇입니까?</option>
-                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
-                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
-                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
-                    </select>
-                    <p id="ans-gospel" class="hidden text-sm font-bold opacity-90 text-gt-gospel">우리는 성경적 교사상을 확립한다.</p>
-                </div>
-                <!-- 양육 -->
-                <div id="box-nurture" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
-                    <h3 class="font-bold text-lg mb-3">양육</h3>
-                    <select id="sel-nurture" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
-                        <option value="">이 가치의 선언문은 무엇입니까?</option>
-                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
-                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
-                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
-                    </select>
-                    <p id="ans-nurture" class="hidden text-sm font-bold opacity-90 text-gt-nurture">우리는 교육현장의 복음화를 위하여 충성한다.</p>
-                </div>
-                <!-- 공동체 -->
-                <div id="box-community" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
-                    <h3 class="font-bold text-lg mb-3">공동체</h3>
-                    <select id="sel-community" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
-                        <option value="">이 가치의 선언문은 무엇입니까?</option>
-                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
-                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
-                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
-                    </select>
-                    <p id="ans-community" class="hidden text-sm font-bold opacity-90 text-gt-community">우리는 하나님 나라의 확장에 헌신한다.</p>
-                </div>
-            </div>
-            <button id="stage2-next-btn" onclick="nextStage(3)" class="hidden w-full bg-gt-800 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-gt-900 transition-all animate-fade-in">파송 서약 준비 완료</button>
+        <!-- Progress -->
+        <div class="w-full bg-slate-200 h-2">
+            <div id="progress-bar" class="bg-blue-500 h-2 transition-all duration-300" style="width: 0%;"></div>
         </div>
 
-        <!-- Stage 3: Pledge -->
-        <div id="stage-3" class="stage-view animate-slide-up space-y-4">
-            <div class="text-center space-y-2 mb-6">
-                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 3. 결단과 파송</span>
-                <h2 class="text-2xl font-bold text-gt-900">파송서약문</h2>
-                <div class="w-full bg-slate-200 h-2 rounded-full mt-4 overflow-hidden">
-                    <div id="pledge-progress" class="bg-gt-500 h-full w-0 transition-all duration-500"></div>
-                </div>
+        <!-- Start Screen -->
+        <div id="start-screen" class="p-8 text-center">
+            <div class="text-6xl mb-6">📝</div>
+            <h2 class="text-2xl font-extrabold text-slate-800 mb-4">문제은행 모의고사 시작</h2>
+            <div class="text-slate-600 mb-8 space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200 inline-block text-left">
+                <p>• <b>DB 보유 문항:</b> 총 35문제</p>
+                <p>• <b>이번 회차 출제:</b> 무작위 10문제</p>
+                <p>• <b>출제 범위:</b> GT 파송선언문 해설, 비전2030+ 가치/선언</p>
             </div>
-            <div class="space-y-3 max-h-[350px] overflow-y-auto hide-scroll pb-4" id="pledge-list">
-                <!-- Checkboxes generated by JS -->
-            </div>
-            <button id="stage3-next-btn" onclick="generateCert()" disabled class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-slate-200 text-slate-400">모든 조항에 서약해주세요</button>
+            <button onclick="startExam()" class="block w-full max-w-md mx-auto bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200 text-lg">
+                시험 응시하기
+            </button>
         </div>
 
-        <!-- Stage 4: Certificate -->
-        <div id="stage-4" class="stage-view animate-slide-up space-y-6">
-            <div class="bg-white p-8 rounded-2xl border-4 border-double border-gt-800 shadow-2xl relative overflow-hidden text-center">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-gt-gospel via-gt-nurture to-gt-community"></div>
-                <p class="text-xs font-bold text-slate-400 tracking-[0.2em] mb-6">COMMISSIONING CERTIFICATE</p>
-                <h1 class="text-3xl font-extrabold text-gt-900 mb-8">교사선교사 파송증서</h1>
-                <div class="mb-8">
-                    <p class="text-lg text-slate-600 mb-2">하나님의교사들(GT)</p>
-                    <p id="cert-name" class="text-2xl font-bold text-gt-500 underline decoration-2 underline-offset-8"></p>
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden p-6 sm:p-8">
+            <div class="flex justify-between items-end mb-4">
+                <div class="text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100" id="q-counter">Q 1 / 10</div>
+            </div>
+            
+            <h2 id="q-text" class="text-xl sm:text-2xl font-bold text-slate-800 mb-6 leading-relaxed word-keep">질문 내용</h2>
+            
+            <div id="options-container" class="space-y-3 mb-6">
+                <!-- Buttons injected by JS -->
+            </div>
+
+            <div id="feedback-container" class="hidden p-4 rounded-xl text-sm leading-relaxed mb-6 border">
+                <p id="feedback-text" class="font-medium"></p>
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-slate-800 text-white font-bold py-4 rounded-xl hover:bg-slate-900 transition-colors text-lg">다음 문제로</button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden text-center p-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6">시험 결과 보고서</h2>
+            <div class="flex justify-center gap-4 mb-8">
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 w-32">
+                    <p class="text-xs font-bold text-blue-500 mb-1">총 문항</p>
+                    <p class="text-3xl font-black text-blue-800" id="res-total">10</p>
                 </div>
-                <p class="text-sm text-slate-700 leading-loose mb-10 px-4">
-                    위 사람은 '하나님의 심정을 이어가는 교육공동체'의 비전을 품고, <br>
-                    교육현장의 복음화와 하나님 나라의 확장에 헌신할 <br>
-                    참된 교사선교사로 파송되었음을 확증합니다.
-                </p>
-                <div class="flex justify-between items-end border-t border-slate-100 pt-6">
-                    <div class="text-left">
-                        <p class="text-xs text-slate-400 font-bold">DATE</p>
-                        <p id="cert-date" class="text-sm font-semibold text-slate-700"></p>
-                    </div>
-                    <div class="w-16 h-16 rounded-full border-4 border-red-500 text-red-500 flex items-center justify-center font-black text-sm -rotate-12 opacity-80">GT<br>인장</div>
+                <div class="bg-green-50 border border-green-200 rounded-xl p-6 w-32">
+                    <p class="text-xs font-bold text-green-500 mb-1">정답</p>
+                    <p class="text-3xl font-black text-green-800" id="res-correct">0</p>
                 </div>
             </div>
-            <button onclick="window.location.reload()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-900 transition-colors">새로운 여정 다시 시작하기</button>
+            <div id="res-msg" class="text-slate-600 mb-8 font-medium leading-relaxed bg-slate-50 p-4 rounded-lg"></div>
+            <button onclick="location.reload()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition-colors shadow-lg">
+                새로운 랜덤 문제로 다시 풀기
+            </button>
         </div>
 
     </div>
 
     <script>
-        // 전역 변수
-        let userName = "동역자";
-        let pledgeChecked = [false, false, false, false, false, false];
-        const pledges = [
-            "나는 삼위일체 하나님과 신구약 66권이 진리임을 믿습니다.",
-            "나는 예수 그리스도만이 유일한 구원의 길임을 믿습니다.",
-            "나는 바른 신앙생활로 공동체의 덕과 하나님 나라의 영광을 드러내겠습니다.",
-            "나는 교사선교사로서 교육 현장의 복음화를 위해 충성하겠습니다.",
-            "나는 사역이 하나님의 뜻인줄 알고 시간과 물질로 동역하겠습니다.",
-            "나는 GT 회원으로서 공동체의 결정과 요구에 순종하겠습니다."
+        // 100문제를 대체할 고밀도 35문항 문제은행 DB
+        const questionBank = [
+            // --- Part 1. 파송선언문 및 교리 (PDF 기반) ---
+            { q: "GT(하나님의교사들)의 공식 표어는?", opts: ["사랑으로 가르치는 교사", "하나님의 심정을 이어가는 교육공동체", "세상을 변화시키는 기독교사", "진리로 연합하는 학교"], ans: 1, exp: "GT는 죄 아래 신음하는 세상을 향한 '하나님의 심정을 이어가는 교육공동체'를 표어로 삼습니다.[cite: 2]" },
+            { q: "GT 활동의 시작 연도는 언제입니까?", opts: ["1979년", "1989년", "1999년", "2003년"], ans: 1, exp: "GT는 1989년부터 활동을 시작한 기독교사단체입니다.[cite: 2]" },
+            { q: "GT의 명칭은 주로 어느 단체와 거제시 기독교사들의 연합으로 2003년부터 사용되었나요?", opts: ["좋은교사운동", "한국기독학생회(IVF)", "어린이전도협회", "후세대선교회"], ans: 3, exp: "후세대선교회와 경남 거제시에서 활동하던 기독교사들이 연합하면서 사용하기 시작했습니다.[cite: 2]" },
+            { q: "파송서약문은 총 몇 개의 '하나' 조항으로 이루어져 있나요?", opts: ["4개", "5개", "6개", "7개"], ans: 2, exp: "GT 파송서약문은 총 6개의 선언 항목으로 구성되어 있습니다.[cite: 2]" },
+            { q: "기독교 구원과 신앙을 종합적으로 체계화한 대표적인 신앙고백서는?", opts: ["사도신경", "니케아 신조", "웨스트민스터 신앙고백서", "하이델베르크 요리문답"], ans: 2, exp: "구원과 신앙을 종합적으로 체계화한 문서로는 웨스트민스터 신앙고백서와 대/소교리문답을 듭니다.[cite: 2]" },
+            { q: "성경 인물 중 언약 백성의 징계를 예표하기 위해 3년간 벗은 몸과 벗은 발로 생활하며 하나님의 심정을 대언한 자는?", opts: ["이사야", "예레미야", "에스겔", "다니엘"], ans: 0, exp: "이사야는 애굽과 구스에 대한 징계를 예표하기 위해 3년간 벗은 몸으로 생활했습니다.[cite: 2]" },
+            { q: "예루살렘의 멸망을 알리기 위해 아내가 죽었음에도 슬피 울 수 없었던 선지자는?", opts: ["에스겔", "다니엘", "예레미야", "호세아"], ans: 0, exp: "에스겔은 바빌론에 끌려온 상황에서 예루살렘의 종말을 알리기 위해 슬피 울지 못하는 행동을 했습니다.[cite: 2]" },
+            { q: "파송선언문 1항에서 우리가 '진리임을 믿는다'고 고백하는 대상 두 가지는?", opts: ["교회와 성도", "삼위일체 하나님과 신구약 66권", "예수 그리스도와 성령", "신앙고백서와 사도신경"], ans: 1, exp: "1항: '나는 삼위일체 하나님과 신구약 성경 66권이 진리임을 믿습니다.'[cite: 2]" },
+            { q: "파송선언문 2항에 따르면 '유일한 구원의 길'은 누구입니까?", opts: ["성모 마리아", "예수 그리스도", "참된 교회", "선한 행실"], ans: 1, exp: "2항: '나는 예수 그리스도만이 유일한 구원의 길임을 믿습니다.'[cite: 2]" },
+            { q: "파송선언문 3항에서 바른 신앙생활을 통해 드러내야 할 두 가지는?", opts: ["개인의 축복과 건강", "공동체의 덕과 하나님 나라의 영광", "교회의 부흥과 재정", "학교의 평안과 승진"], ans: 1, exp: "3항: '바른 신앙생활로 공동체의 덕과 하나님 나라의 영광을 드러내겠습니다.'[cite: 2]" },
+            { q: "파송선언문 4항에 나타난 우리의 직분(정체성) 명칭은?", opts: ["교육 행정가", "전문 상담가", "기독 학부모", "교사선교사"], ans: 3, exp: "4항: '나는 하나님의교사들의 교사선교사로서 교육 현장의 복음화를 위해 충성하겠습니다.'[cite: 2]" },
+            { q: "파송선언문 5항에 명시된, 동역을 위해 헌신해야 할 두 가지는?", opts: ["시간과 물질", "기도와 찬양", "사랑과 봉사", "지식과 경험"], ans: 0, exp: "5항: '사역이 하나님의 뜻인줄 알고 시간과 물질로 동역하겠습니다.'[cite: 2]" },
+            { q: "파송선언문 6항에 따라 회원은 무엇에 순종해야 합니까?", opts: ["국가의 교육 정책", "공동체의 결정과 요구", "교장의 지시", "학부모의 민원"], ans: 1, exp: "6항: '회원으로서 공동체의 결정과 요구에 순종하겠습니다.'[cite: 2]" },
+            { q: "삼위일체 하나님에 대한 바른 설명은?", opts: ["본질은 다르나 목표가 같음", "세 분의 다른 신이 연합함", "본질은 하나이나 위격이 셋임", "한 분이 시대에 따라 모습을 바꿈"], ans: 2, exp: "하나님은 성부, 성자, 성령의 구분된 삼위의 방식으로 존재하지만 능력과 영광과 권위가 동일한 한 분이십니다.[cite: 2]" },
+            { q: "사도신경의 원문(라틴어)에서 '나는 믿습니다(Credo)'라는 단어는 총 몇 회 구분되어 등장하나요?", opts: ["1회", "2회", "3회", "4회"], ans: 2, exp: "원문 라틴어에는 'Credo'가 성부, 성자, 성령에 대해 각각 3회 구분되어 등장합니다.[cite: 2]" },
+            { q: "인간이 타락한 이후, 피조 세계를 통해서만 하나님을 바르게 인식할 수 있게 되었나요?", opts: ["네, 자연을 보면 알 수 있습니다.", "아니요, 영적으로 어두워져 불가능해졌습니다."], ans: 1, exp: "인간은 하나님과의 관계 단절로 영적으로 어두워져, 더 이상 만물만으로는 하나님을 바르게 인식할 수 없습니다.[cite: 2]" },
+            { q: "가장 오래된 신앙고백문은 무엇인가요?", opts: ["니케아 신조", "웨스트민스터 신앙고백", "사도신경", "도르트 신조"], ans: 2, exp: "가장 오래되었고 대표적인 신앙고백문은 사도신경입니다.[cite: 2]" },
+            
+            // --- Part 2. 비전2030+ 추진 및 구조 (PPTX 기반) ---
+            { q: "비전 2030+에서 우리의 모든 사역에 가장 먼저 고려되어야 할 3가지 핵심가치는?", opts: ["말씀, 기도, 찬양", "교육, 선교, 연합", "복음, 양육, 공동체", "제자, 동역, 헌신"], ans: 2, exp: "비전 2030+의 핵심가치는 복음, 양육, 공동체입니다.[cite: 3]" },
+            { q: "비전 2030+ 수립 과정 중 '창립기념대회'에는 몇 명이 참석하여 비전 2020을 돌아보았나요?", opts: ["50명", "85명", "136명", "200명"], ans: 2, exp: "창립기념대회에 136명이 모여 비전 2020 보고서를 만들었습니다.[cite: 3]" },
+            { q: "비전 2020 교사양육 영역의 평가로 새롭게 시작된 항목은?", opts: ["지역 모임 개척", "해외 학교 설립", "온라인 유튜브 방송", "기독 대안학교 설립"], ans: 0, exp: "교사양육 영역 평가 결과, 지역모임 개척 시작이 핵심 성과로 꼽혔습니다.[cite: 3]" },
+            { q: "비전 2020 제자양육의 새로운 반영 사항(해결책) 중 하나는 무엇인가요?", opts: ["수능 대비반 운영", "토디학교 지역 확대", "전교생 수련회", "사설 학원 연계"], ans: 1, exp: "제자양육 반영 사항으로 '토디학교 지역 확대'와 '기독학생반 지원'이 포함되었습니다.[cite: 3]" },
+            { q: "예비교사 양육 영역의 평가에서 긍정적인 신호로 꼽힌 것은?", opts: ["현직교사들의 적극적인 참여", "정부의 예산 지원", "학교장의 표창", "신규 발령 증가"], ans: 0, exp: "예비교사 사역에 대해 현직교사들이 적극적으로 참여하기 시작한 것이 큰 성과였습니다.[cite: 3]" },
+            { q: "비전 2020 교육실천 영역에서 반영된 향후 과제는?", opts: ["일방적인 지시 하달", "교육실천 담당자 세움", "외부 강사 전담", "의무 참석 규정"], ans: 1, exp: "교육실천 담당자를 세우고, 자발성에 기초한 모집 공고를 내기로 반영했습니다.[cite: 3]" },
+            { q: "교육선교 영역에서 통일한국 시대를 대비하여 파송하기로 한 것은?", opts: ["해외 의료팀", "통일교육 선교팀", "찬양 사역팀", "건축 봉사팀"], ans: 1, exp: "비전 2030+ 반영 사항으로 통일교육 선교팀 파송이 포함되어 있습니다.[cite: 3]" },
+            { q: "비전 2030+ 선언문 1: '우리는 성경적 교사상을 확립한다.' 이는 어떤 핵심가치에 해당하나요?", opts: ["복음", "양육", "공동체"], ans: 0, exp: "성경적 교사상 확립은 '복음' 가치의 선언입니다.[cite: 3]" },
+            { q: "비전 2030+ 선언문 2: '우리는 교육현장의 복음화를 위하여 충성한다.' 이는 어떤 핵심가치에 해당하나요?", opts: ["복음", "양육", "공동체"], ans: 1, exp: "교육현장 복음화는 '양육' 가치의 선언입니다.[cite: 3]" },
+            { q: "비전 2030+ 선언문 3: '우리는 하나님 나라의 확장에 헌신한다.' 이는 어떤 핵심가치에 해당하나요?", opts: ["복음", "양육", "공동체"], ans: 2, exp: "하나님 나라 확장은 '공동체' 가치의 선언입니다.[cite: 3]" },
+            { q: "복음 가치를 실천하기 위한 3가지 하위 영역(성경적 교사상 확립 방법)은?", opts: ["말씀, 영적훈련, 공동체", "디모데, 교사, 예비교사", "교육, 연합, 선교"], ans: 0, exp: "성경적 교사상은 말씀, 영적훈련, 공동체를 통해 참스승 예수님을 닮아가며 확립됩니다.[cite: 3]" },
+            { q: "양육 가치를 실천하기 위한 3가지 대상(교육현장 복음화 방법)은?", opts: ["말씀, 영적훈련, 공동체", "디모데, 교사, 예비교사", "교육, 연합, 선교"], ans: 1, exp: "교육현장의 복음화를 위해 제자(디모데), 교사, 예비교사를 소명으로 부릅니다.[cite: 3]" },
+            { q: "공동체 가치를 실천하기 위한 3가지 영역(하나님 나라 확장 열매)은?", opts: ["말씀, 영적훈련, 공동체", "디모데, 교사, 예비교사", "교육, 연합, 선교"], ans: 2, exp: "하나님 나라 확장은 교육, 연합, 선교 사역의 열매로 나타납니다.[cite: 3]" },
+            { q: "비전 2030+ 전략회의 질문 중, '복음' 영역의 영적 훈련을 위해 논의된 주요 질문은?", opts: ["어떻게 예비교사를 모집할까?", "디모데 양육의 부담을 어떻게 덜까?", "말씀을 읽고 단체 안에서 어떻게 교육적 적용을 할 것인가?", "통일 한국을 대비한 선교는?"], ans: 2, exp: "복음 영역 전략회의에서는 말씀의 교육적 적용과 영적훈련 강화 방안을 질문했습니다.[cite: 3]" },
+            { q: "비전 2030+ 전략회의 중 '디모데 양육'에 관한 질문의 핵심 고민은 무엇이었나요?", opts: ["재정 확보 방안", "마음의 부담을 조금이라도 덜 수 있는 방법", "교장선생님의 허락 받기", "학부모의 민원 해결"], ans: 1, exp: "양육(초, 중등) 영역에서는 교사들의 마음의 부담을 조금이라도 덜 수 있는 방법을 함께 고민했습니다.[cite: 3]" },
+            { q: "비전 2030+ 전략회의 질문 중, '공동체(하나님 나라 확장)'와 관련하여 나눈 논의 주제는?", opts: ["예비교사 신입생 모집", "우리 색깔의 교육론 만들기 및 통일한국 준비", "영적 훈련 강화", "말씀의 교육적 적용"], ans: 1, exp: "공동체 전략회의에서는 교육 안에 양육이 있는 우리 색깔의 교육론과 통일한국 대비 선교활동을 논의했습니다.[cite: 3]" },
+            { q: "비전 2030+는 단순히 10년 단위의 단기 목표만을 의미하나요?", opts: ["네, 정확히 2030년까지만 유효합니다.", "아니요, 10년 단위가 아니라 그 이상(2030+)을 바라봅니다."], ans: 1, exp: "비전2030+는 10년 단위의 목표가 아니라 그 이상의 미래를 바라보는 장기 비전입니다.[cite: 3]" },
+            { q: "비전 2030+ 추진을 이끈 위원장은 누구였나요?", opts: ["서혜지", "임채정", "박종식", "문선목"], ans: 2, exp: "비전2030+ 추진 조직의 위원장은 박종식 위원장이었습니다.[cite: 3]" }
         ];
 
-        function nextStage(stageNum) {
-            if (stageNum === 1) {
-                const inputName = document.getElementById('user-name').value.trim();
-                if (inputName) userName = inputName;
-                document.getElementById('progress-container').classList.remove('hidden');
-                document.getElementById('progress-container').classList.add('flex');
-            }
-            
-            // 프로그레스 바 업데이트
-            for (let i = 1; i <= 3; i++) {
-                const pBar = document.getElementById(`prog-${i}`);
-                if(pBar) pBar.className = `h-1.5 flex-1 rounded-full transition-all duration-500 ${stageNum >= i ? 'bg-gt-800' : 'bg-slate-200'}`;
-            }
+        let currentSession = [];
+        let currentQIndex = 0;
+        let score = 0;
 
-            // 뷰 전환
-            document.querySelectorAll('.stage-view').forEach(el => el.classList.remove('active'));
-            document.getElementById(`stage-${stageNum}`).classList.add('active');
-
-            if (stageNum === 3) initPledgeList();
+        // 배열 무작위 섞기 (피셔-예이츠 셔플)
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
         }
 
-        /* Stage 1 Logic */
-        function checkStage1(ansIdx, btnElement) {
-            const btns = document.querySelectorAll('#stage1-options button');
-            btns.forEach(b => b.disabled = true);
+        function startExam() {
+            // 전체 35문제 중 랜덤으로 10문제를 뽑아 이번 세션 구성
+            const EXAM_LENGTH = 10;
+            currentSession = shuffle([...questionBank]).slice(0, EXAM_LENGTH);
+            currentQIndex = 0;
+            score = 0;
             
-            const feedback = document.getElementById('stage1-feedback');
-            const msg = document.getElementById('stage1-msg');
-            const nextBtn = document.getElementById('stage1-next-btn');
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('score-display').innerText = score;
+            
+            loadQuestion();
+        }
 
-            feedback.classList.remove('hidden');
+        function loadQuestion() {
+            const q = currentSession[currentQIndex];
+            document.getElementById('q-counter').innerText = `Q ${currentQIndex + 1} / ${currentSession.length}`;
+            document.getElementById('q-text').innerText = q.q;
             
-            if (ansIdx === 1) { // 정답
-                btnElement.className = "w-full text-left p-4 rounded-xl border-2 transition-all font-semibold border-green-500 bg-green-50 text-green-800";
-                feedback.className = "p-4 rounded-xl animate-fade-in mt-4 bg-green-100";
-                msg.innerHTML = "정답입니다! 교육 현장을 단순 직업이 아닌 영적 소명지로 인식하는 것, 그것이 바로 교사선교사의 첫걸음입니다.[cite: 2]";
-                nextBtn.classList.remove('hidden');
+            // Progress Bar 업데이트
+            const pct = (currentQIndex / currentSession.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            document.getElementById('feedback-container').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            q.opts.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn w-full text-left p-4 rounded-xl border-2 border-slate-200 bg-white font-medium text-slate-700 cursor-pointer flex justify-between items-center';
+                btn.innerHTML = `<span>${optText}</span> <span class="chk-icon hidden text-xl"></span>`;
+                btn.onclick = () => checkAnswer(i, btn);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIdx, btnEl) {
+            const q = currentSession[currentQIndex];
+            const buttons = document.querySelectorAll('.opt-btn');
+            
+            // 버튼들 클릭 잠금
+            buttons.forEach(b => {
+                b.disabled = true;
+                b.classList.remove('cursor-pointer');
+            });
+
+            const fBox = document.getElementById('feedback-container');
+            const fText = document.getElementById('feedback-text');
+            fBox.classList.remove('hidden');
+
+            // 정답 처리
+            if (selectedIdx === q.ans) {
+                btnEl.classList.add('opt-correct');
+                btnEl.querySelector('.chk-icon').innerText = '✅';
+                btnEl.querySelector('.chk-icon').classList.remove('hidden');
+                score++;
+                document.getElementById('score-display').innerText = score;
+                fBox.className = 'p-4 rounded-xl text-sm leading-relaxed mb-6 bg-green-100 text-green-900 border border-green-300';
             } else {
-                btnElement.className = "w-full text-left p-4 rounded-xl border-2 transition-all font-semibold border-red-400 bg-red-50 text-red-800";
-                feedback.className = "p-4 rounded-xl animate-fade-in mt-4 bg-red-100";
-                msg.innerHTML = "아쉽습니다. 하나님의 심정은 타락한 세상을 회복하시려는 하나님의 넓고 깊은 구속사적 마음을 뜻합니다.[cite: 2]";
-                setTimeout(() => {
-                    btns.forEach(b => { b.disabled = false; b.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700"; });
-                    feedback.classList.add('hidden');
-                }, 2500);
-            }
-        }
-
-        /* Stage 2 Logic */
-        function checkStage2() {
-            const checks = ['gospel', 'nurture', 'community'];
-            let allCorrect = true;
-
-            checks.forEach(id => {
-                const sel = document.getElementById(`sel-${id}`);
-                const box = document.getElementById(`box-${id}`);
-                const ansTxt = document.getElementById(`ans-${id}`);
+                btnEl.classList.add('opt-wrong');
+                btnEl.querySelector('.chk-icon').innerText = '❌';
+                btnEl.querySelector('.chk-icon').classList.remove('hidden');
                 
-                if (sel.value === id) {
-                    sel.classList.add('hidden');
-                    ansTxt.classList.remove('hidden');
-                    box.classList.remove('border-slate-200', 'bg-white');
-                    box.classList.add(`border-gt-${id}`, `bg-${id === 'gospel' ? 'purple' : id === 'nurture' ? 'teal' : 'red'}-50`);
-                } else if (sel.value !== "") {
-                    allCorrect = false;
-                    alert("핵심가치에 알맞은 선언이 아닙니다. 다시 생각해보세요![cite: 3]");
-                    sel.value = "";
-                } else {
-                    allCorrect = false;
-                }
-            });
-
-            if (allCorrect) {
-                document.getElementById('stage2-next-btn').classList.remove('hidden');
+                // 실제 정답 버튼 표시
+                const correctBtn = buttons[q.ans];
+                correctBtn.classList.add('opt-correct');
+                correctBtn.querySelector('.chk-icon').innerText = '✅';
+                correctBtn.querySelector('.chk-icon').classList.remove('hidden');
+                
+                fBox.className = 'p-4 rounded-xl text-sm leading-relaxed mb-6 bg-red-100 text-red-900 border border-red-300';
             }
-        }
 
-        /* Stage 3 Logic */
-        function initPledgeList() {
-            const list = document.getElementById('pledge-list');
-            list.innerHTML = '';
-            pledges.forEach((txt, i) => {
-                list.innerHTML += `
-                    <div id="pledge-item-${i}" onclick="togglePledge(${i})" class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 flex gap-4 items-start">
-                        <div id="pledge-chk-${i}" class="w-6 h-6 rounded-md border-2 border-slate-300 flex-shrink-0 flex items-center justify-center transition-colors"></div>
-                        <p id="pledge-txt-${i}" class="text-sm leading-relaxed text-slate-600">${txt}[cite: 2]</p>
-                    </div>
-                `;
-            });
-        }
-
-        function togglePledge(idx) {
-            pledgeChecked[idx] = !pledgeChecked[idx];
+            fText.innerText = q.exp;
             
-            const item = document.getElementById(`pledge-item-${idx}`);
-            const chk = document.getElementById(`pledge-chk-${idx}`);
-            const txt = document.getElementById(`pledge-txt-${idx}`);
-
-            if(pledgeChecked[idx]) {
-                item.className = "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex gap-4 items-start border-gt-500 bg-blue-50";
-                chk.className = "w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-colors bg-gt-500 border-gt-500";
-                chk.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
-                txt.className = "text-sm leading-relaxed text-gt-900 font-bold";
-            } else {
-                item.className = "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex gap-4 items-start border-slate-200 bg-white hover:border-slate-300";
-                chk.className = "w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-colors border-slate-300";
-                chk.innerHTML = "";
-                txt.className = "text-sm leading-relaxed text-slate-600";
+            const nBtn = document.getElementById('next-btn');
+            if (currentQIndex === currentSession.length - 1) {
+                nBtn.innerText = "시험 결과 확인";
+                nBtn.classList.replace('bg-slate-800', 'bg-blue-600');
+                nBtn.classList.replace('hover:bg-slate-900', 'hover:bg-blue-700');
             }
+            nBtn.classList.remove('hidden');
+        }
 
-            const checkedCount = pledgeChecked.filter(Boolean).length;
-            const pct = (checkedCount / 6) * 100;
-            document.getElementById('pledge-progress').style.width = `${pct}%`;
-
-            const btn = document.getElementById('stage3-next-btn');
-            if(pct === 100) {
-                btn.disabled = false;
-                btn.className = "w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-gt-community text-white shadow-[0_0_20px_rgba(247,108,94,0.4)] animate-pulse-slow scale-[1.02]";
-                btn.innerText = "서약 및 파송증서 발급";
+        function nextQuestion() {
+            currentQIndex++;
+            if (currentQIndex < currentSession.length) {
+                loadQuestion();
             } else {
-                btn.disabled = true;
-                btn.className = "w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-slate-200 text-slate-400";
-                btn.innerText = "모든 조항에 서약해주세요";
+                finishExam();
             }
         }
 
-        /* Stage 4 Logic */
-        function generateCert() {
-            document.getElementById('progress-container').classList.add('hidden');
-            document.querySelectorAll('.stage-view').forEach(el => el.classList.remove('active'));
-            document.getElementById('stage-4').classList.add('active');
-
-            document.getElementById('cert-name').innerText = `${userName} 교사`;
+        function finishExam() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('progress-bar').style.width = '100%';
             
-            const today = new Date();
-            document.getElementById('cert-date').innerText = `${today.getFullYear()}. ${today.getMonth()+1}. ${today.getDate()}.`;
+            document.getElementById('res-correct').innerText = score;
+            const resMsg = document.getElementById('res-msg');
+            
+            if (score === 10) {
+                resMsg.innerHTML = "💯 완벽합니다! GT의 비전과 역사를 꿰뚫고 계시군요. 선생님은 진정한 교사선교사입니다.";
+            } else if (score >= 7) {
+                resMsg.innerHTML = "👏 대단합니다! 비전 2030+의 핵심 가치를 아주 잘 이해하고 계십니다.";
+            } else {
+                resMsg.innerHTML = "💡 수고하셨습니다. 이번 모의고사가 하나님의교사들의 비전을 조금 더 알아가는 뜻깊은 시간이 되었기를 바랍니다.";
+            }
         }
     </script>
 </body>
