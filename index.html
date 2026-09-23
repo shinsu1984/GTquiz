@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GT(하나님의교사들) 비전 퀴즈</title>
+    <style>
+        :root {
+            --primary: #2b5c8f;
+            --gospel: #a788b5; /* 비전2030+ 복음 컬러 */
+            --nurture: #b4d193; /* 비전2030+ 양육 컬러 */
+            --community: #f89d66; /* 비전2030+ 공동체 컬러 */
+            --bg: #f4f7f6;
+            --text: #333;
+        }
+        * { box-sizing: border-box; font-family: 'Pretendard', -apple-system, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .app-container { background: white; max-width: 500px; width: 100%; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header p { margin: 5px 0 0 0; font-size: 0.9rem; opacity: 0.9; }
+        .progress-bar { height: 6px; background: #e0e0e0; width: 100%; }
+        .progress-fill { height: 100%; background: var(--community); width: 0%; transition: width 0.3s ease; }
+        
+        .quiz-content { padding: 30px 20px; }
+        .level-badge { display: inline-block; padding: 4px 10px; background: #e9f0f7; color: var(--primary); border-radius: 20px; font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; }
+        .question { font-size: 1.2rem; font-weight: 700; margin-bottom: 25px; line-height: 1.4; }
+        
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .btn-option { background: white; border: 2px solid #e0e0e0; padding: 15px; border-radius: 10px; font-size: 1rem; cursor: pointer; text-align: left; transition: all 0.2s; color: var(--text); }
+        .btn-option:hover { border-color: var(--primary); background: #f8faff; }
+        .btn-option.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+        .btn-option.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+        .btn-option:disabled { cursor: not-allowed; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 10px; display: none; font-size: 0.95rem; line-height: 1.5; }
+        .feedback.show { display: block; animation: fadeIn 0.5s; }
+        .feedback.success { background: #e8f5e9; border-left: 4px solid #28a745; }
+        .feedback.error { background: #ffebee; border-left: 4px solid #dc3545; }
+        
+        .btn-next { width: 100%; padding: 15px; border: none; background: var(--primary); color: white; font-size: 1.1rem; font-weight: bold; border-radius: 10px; margin-top: 20px; cursor: pointer; display: none; transition: 0.2s; }
+        .btn-next:hover { background: #1a426b; }
+
+        .result-screen { text-align: center; display: none; }
+        .result-screen h2 { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
+        .result-screen p { font-size: 1.1rem; margin-bottom: 30px; line-height: 1.6; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>GT 비전 퀴즈</h1>
+        <p>하나님의 심정을 이어가는 교육공동체</p>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    
+    <div class="quiz-content">
+        <div id="quiz-screen">
+            <div class="level-badge" id="level-badge">Level 1. GT 기초</div>
+            <div class="question" id="question">질문이 여기에 표시됩니다.</div>
+            <div class="options" id="options">
+                <!-- 옵션 버튼들이 동적으로 생성됩니다 -->
+            </div>
+            <div class="feedback" id="feedback">해설이 여기에 표시됩니다.</div>
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()">다음 문제로</button>
+        </div>
+
+        <div class="result-screen" id="result-screen">
+            <h2>퀴즈 완료!</h2>
+            <p id="score-text">수고하셨습니다.</p>
+            <button class="btn-next" style="display: block;" onclick="location.reload()">처음부터 다시 풀기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 제공된 GT 파송선언문 해설 PDF 및 비전2030+ PPTX 기반 문제 데이터
+    const questions = [
+        {
+            level: "Level 1. GT의 부르심",
+            question: "GT(하나님의교사들)가 고백하는 핵심 표어는 무엇일까요?",
+            options: [
+                "하나님의 사랑을 실천하는 학교",
+                "하나님의 심정을 이어가는 교육공동체",
+                "성경적 세계관으로 가르치는 교사",
+                "세상의 빛과 소금이 되는 공동체"
+            ],
+            answer: 1,
+            explanation: "GT는 죄 아래 신음하는 인생과 세상을 향한 '하나님의 심정을 이어가는 교육공동체'라는 표어를 통해 교육을 단순 직업이 아닌 소명의 현장으로 고백합니다."
+        },
+        {
+            level: "Level 1. 파송선언문",
+            question: "GT 파송선언문에 따르면, 교육 현장에서 우리는 스스로를 어떤 정체성으로 부르며 복음화에 충성하나요?",
+            options: ["전문 상담사", "교육 행정가", "교사 선교사", "기독 학부모"],
+            answer: 2,
+            explanation: "파송선언문 4항: '나는 하나님의교사들의 교사선교사로서 교육 현장의 복음화를 위해 충성하겠습니다.' 우리는 영적 싸움터인 교육현장으로 보냄 받은 교사선교사입니다."
+        },
+        {
+            level: "Level 2. 비전 2030+ 가치",
+            question: "비전 2030+에서 우리의 모든 사역에 가장 먼저 고려되어야 할 3가지 핵심가치는 무엇인가요?",
+            options: [
+                "복음, 양육, 공동체",
+                "말씀, 기도, 찬양",
+                "교육, 선교, 구제",
+                "성실, 사랑, 인내"
+            ],
+            answer: 0,
+            explanation: "비전 2030+의 핵심가치는 '복음, 양육, 공동체'이며, 이는 하나님의교사들이 지켜야 할 가장 기초적인 가치입니다."
+        },
+        {
+            level: "Level 2. 비전 2030+ 선언",
+            question: "비전 2030+ 선언문 중 '우리는 교육현장의 복음화를 위하여 충성한다'를 실천하기 위한 세 가지 양육에 해당하지 않는 것은?",
+            options: ["디모데 양육", "교사 양육", "예비교사 양육", "학부모 양육"],
+            answer: 3,
+            explanation: "교육현장의 복음화를 위해 GT는 '디모데 양육', '교사 양육', '예비교사 양육'이라는 세 가지 핵심 양육을 통해 제자와 동역자들을 소명으로 부릅니다."
+        },
+        {
+            level: "Level 3. 비전 2030+ 열매",
+            question: "'우리는 하나님 나라의 확장에 헌신한다'는 비전을 이루기 위해 지향하는 사역의 열매(영역) 3가지는 무엇인가요?",
+            options: [
+                "교회, 가정, 학교",
+                "제자, 동역자, 소명",
+                "교육, 연합, 선교",
+                "말씀, 영적훈련, 공동체"
+            ],
+            answer: 2,
+            explanation: "하나님 나라의 확장을 위해 우리는 '교육, 연합, 선교' 영역에서 헌신합니다. (참고: '말씀, 영적훈련, 공동체'는 '성경적 교사상 확립'을 위한 실천 방안입니다.)"
+        }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    const elBadge = document.getElementById('level-badge');
+    const elQuestion = document.getElementById('question');
+    const elOptions = document.getElementById('options');
+    const elFeedback = document.getElementById('feedback');
+    const elBtnNext = document.getElementById('btn-next');
+    const elProgress = document.getElementById('progress');
+
+    function initQuiz() {
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQ];
+        elBadge.textContent = q.level;
+        elQuestion.textContent = q.question;
+        elOptions.innerHTML = '';
+        elFeedback.className = 'feedback';
+        elFeedback.style.display = 'none';
+        elBtnNext.style.display = 'none';
+        
+        // 진행률 업데이트
+        elProgress.style.width = ((currentQ) / questions.length) * 100 + '%';
+
+        q.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(index, btn);
+            elOptions.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedIndex, btnElement) {
+        const q = questions[currentQ];
+        const buttons = elOptions.querySelectorAll('.btn-option');
+        
+        // 중복 클릭 방지
+        buttons.forEach(btn => btn.disabled = true);
+
+        if (selectedIndex === q.answer) {
+            btnElement.classList.add('correct');
+            elFeedback.textContent = "정답입니다! 🎉 " + q.explanation;
+            elFeedback.className = 'feedback show success';
+            score++;
+        } else {
+            btnElement.classList.add('wrong');
+            buttons[q.answer].classList.add('correct');
+            elFeedback.textContent = "아쉽네요. 💡 " + q.explanation;
+            elFeedback.className = 'feedback show error';
+        }
+        
+        elBtnNext.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQ++;
+        if (currentQ < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        const resultScreen = document.getElementById('result-screen');
+        resultScreen.style.display = 'block';
+        elProgress.style.width = '100%';
+        
+        const scoreText = document.getElementById('score-text');
+        if (score === questions.length) {
+            scoreText.innerHTML = `총 ${questions.length}문제 중 <b>${score}문제</b>를 맞히셨습니다.<br><br>완벽합니다! 선생님은 이미 GT의 훌륭한 교사선교사입니다.`;
+        } else if (score >= questions.length - 2) {
+            scoreText.innerHTML = `총 ${questions.length}문제 중 <b>${score}문제</b>를 맞히셨습니다.<br><br>GT의 비전과 핵심 가치를 아주 잘 이해하고 계시네요!`;
+        } else {
+            scoreText.innerHTML = `총 ${questions.length}문제 중 <b>${score}문제</b>를 맞히셨습니다.<br><br>퀴즈를 통해 GT가 꿈꾸는 교육공동체의 비전을 알아가는 귀한 시간이 되셨기를 바랍니다.`;
+        }
+    }
+
+    initQuiz();
+</script>
+</body>
+</html>
