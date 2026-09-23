@@ -3,551 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GT 비전 퀘스트 : 하나님의 심정을 이어가는 교사선교사</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>GT 비전 2030+ 퀘스트</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gt: { 900: '#0f2347', 800: '#1b3b6f', 500: '#2196f3', gospel: '#8367c7', nurture: '#48a999', community: '#f76c5e' }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --gt-blue: #1b3b6f;
-            --gt-deep: #0f2347;
-            --gt-accent: #2196f3;
-            --gt-coral: #f76c5e;
-            --gt-green: #48a999;
-            --gt-purple: #8367c7;
-            --bg-light: #f5f8fc;
-            --card-bg: #ffffff;
-            --text-main: #2c3e50;
-            --text-sub: #607d8b;
-        }
-
-        * { box-sizing: border-box; font-family: 'Pretendard', -apple-system, sans-serif; margin: 0; padding: 0; }
-        body { background-color: var(--bg-light); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
-
-        .app-viewport { width: 100%; max-width: 520px; background: var(--card-bg); border-radius: 28px; box-shadow: 0 20px 40px rgba(15, 35, 71, 0.12); overflow: hidden; position: relative; border: 1px solid #e1e8f2; }
-
-        /* Top HUD */
-        .hud-header { background: linear-gradient(135deg, var(--gt-deep), var(--gt-blue)); color: white; padding: 20px 24px 16px; position: relative; }
-        .hud-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .gt-brand { font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; opacity: 0.85; text-transform: uppercase; }
-        .sound-toggle { background: rgba(255,255,255,0.15); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-        .stage-indicator { display: flex; gap: 6px; }
-        .stage-dot { flex: 1; height: 6px; background: rgba(255,255,255,0.25); border-radius: 3px; transition: all 0.3s; }
-        .stage-dot.active { background: var(--gt-coral); }
-        .stage-dot.passed { background: var(--gt-green); }
-
-        /* Content Area */
-        .viewport-body { padding: 28px 24px; min-height: 540px; display: flex; flex-direction: column; justify-content: space-between; }
-        
-        .view-section { display: none; flex-direction: column; height: 100%; animation: fadeSlideUp 0.35s ease forwards; }
-        .view-section.active { display: flex; }
-
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Intro Screen */
-        .hero-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: #eef4fc; color: var(--gt-blue); border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 16px; align-self: flex-start; }
-        .hero-title { font-size: 1.75rem; font-weight: 800; line-height: 1.35; color: var(--gt-deep); margin-bottom: 12px; }
-        .hero-desc { color: var(--text-sub); font-size: 0.95rem; line-height: 1.6; margin-bottom: 28px; }
-        .name-box { margin-bottom: 24px; }
-        .name-box label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
-        .name-box input { width: 100%; padding: 14px 16px; border: 2px solid #dde5ef; border-radius: 12px; font-size: 1rem; outline: none; transition: 0.2s; }
-        .name-box input:focus { border-color: var(--gt-accent); box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15); }
-
-        /* Question & Cards UI */
-        .quest-header { margin-bottom: 20px; }
-        .quest-category { font-size: 0.8rem; font-weight: 700; color: var(--gt-accent); text-transform: uppercase; letter-spacing: 1px; }
-        .quest-prompt { font-size: 1.25rem; font-weight: 700; color: var(--gt-deep); margin-top: 4px; line-height: 1.45; }
-        .quest-guide { font-size: 0.85rem; color: var(--text-sub); margin-top: 6px; }
-
-        .options-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .card-opt { display: flex; align-items: center; gap: 14px; padding: 16px; border: 2px solid #eef2f8; border-radius: 14px; background: #ffffff; cursor: pointer; transition: all 0.2s; text-align: left; position: relative; }
-        .card-opt:hover { border-color: #ccd9eb; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.04); }
-        .card-opt.selected { border-color: var(--gt-blue); background: #f4f8fe; }
-        .card-opt.correct { border-color: var(--gt-green); background: #ebf8f5; }
-        .card-opt.wrong { border-color: var(--gt-coral); background: #fdf1f0; }
-        .card-opt-icon { width: 28px; height: 28px; border-radius: 8px; background: #edf2f9; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; color: var(--gt-blue); flex-shrink: 0; }
-        .card-opt.correct .card-opt-icon { background: var(--gt-green); color: white; }
-        .card-opt.wrong .card-opt-icon { background: var(--gt-coral); color: white; }
-        .card-opt-text { font-size: 0.95rem; font-weight: 600; line-height: 1.4; }
-
-        /* Interactive Matching Area (Stage 2) */
-        .match-container { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-        .match-row { display: flex; gap: 8px; align-items: center; }
-        .match-pillar { flex: 1.2; padding: 12px; border-radius: 12px; color: white; font-weight: 700; font-size: 0.88rem; text-align: center; }
-        .match-pillar.p1 { background: var(--gt-purple); }
-        .match-pillar.p2 { background: var(--gt-green); }
-        .match-pillar.p3 { background: var(--gt-coral); }
-        .match-target { flex: 2; padding: 10px 14px; border: 2px dashed #ccd9eb; border-radius: 12px; font-size: 0.85rem; font-weight: 600; min-height: 46px; display: flex; align-items: center; cursor: pointer; transition: 0.2s; background: #fafcff; }
-        .match-target.filled { border: 2px solid #ccd9eb; background: white; }
-        .match-pool { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; background: #f1f5fa; border-radius: 14px; min-height: 60px; }
-        .match-chip { padding: 8px 12px; background: white; border-radius: 8px; font-size: 0.82rem; font-weight: 700; border: 1px solid #d4e0ee; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.03); transition: 0.2s; }
-        .match-chip:hover { border-color: var(--gt-accent); transform: scale(1.03); }
-        .match-chip.assigned { opacity: 0.3; pointer-events: none; }
-
-        /* Explanatory Sheet */
-        .insight-sheet { background: #fbfcfe; border-left: 4px solid var(--gt-accent); border-radius: 0 12px 12px 0; padding: 14px 16px; margin-top: 10px; margin-bottom: 20px; font-size: 0.88rem; line-height: 1.55; color: #475569; display: none; }
-        .insight-sheet.show { display: block; animation: fadeIn 0.3s ease; }
-        .insight-sheet strong { color: var(--gt-deep); display: block; margin-bottom: 4px; }
-
-        /* Stage 4 Pledge Stamping */
-        .pledge-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; max-height: 270px; overflow-y: auto; padding-right: 4px; }
-        .pledge-item { font-size: 0.85rem; line-height: 1.5; padding: 10px 12px; background: #f9fbfe; border-radius: 8px; border-left: 3px solid var(--gt-blue); }
-        .stamp-area { text-align: center; margin: 16px 0; }
-        .seal-button { width: 90px; height: 90px; border-radius: 50%; border: 3px dashed var(--gt-coral); background: #fff5f4; color: var(--gt-coral); font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: 0.3s; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
-        .seal-button:hover { transform: scale(1.05); background: #ffe9e7; }
-        .seal-button.stamped { border-style: solid; background: var(--gt-coral); color: white; transform: rotate(-8deg) scale(1.05); box-shadow: 0 8px 18px rgba(247, 108, 94, 0.35); pointer-events: none; }
-
-        /* Actions & Navigation */
-        .btn-action { width: 100%; padding: 16px; border: none; border-radius: 14px; background: var(--gt-blue); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
-        .btn-action:hover { background: var(--gt-deep); }
-        .btn-action:disabled { opacity: 0.45; cursor: not-allowed; }
-
-        /* Final Certificate View */
-        .certificate-card { background: #fff; border: 3px double #1b3b6f; border-radius: 16px; padding: 24px 20px; text-align: center; position: relative; box-shadow: inset 0 0 20px rgba(27, 59, 111, 0.04); margin-bottom: 20px; }
-        .cert-header { font-size: 0.75rem; letter-spacing: 2px; color: var(--gt-accent); font-weight: 700; margin-bottom: 6px; }
-        .cert-title { font-size: 1.4rem; font-weight: 800; color: var(--gt-deep); margin-bottom: 16px; }
-        .cert-body { font-size: 0.9rem; line-height: 1.7; color: #334155; margin-bottom: 20px; }
-        .cert-badges { display: flex; justify-content: center; gap: 10px; margin-bottom: 18px; }
-        .cert-badge-pill { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 14px; background: #eef4fd; color: var(--gt-blue); border: 1px solid #d4e3f8; }
-        .cert-footer { border-top: 1px solid #eee; padding-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #888; }
-        .cert-seal { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gt-coral); color: var(--gt-coral); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 900; transform: rotate(-10deg); }
-
-        canvas#confetti { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); box-shadow: 0 10px 40px rgba(15, 35, 71, 0.08); border: 1px solid rgba(255,255,255,0.6); }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .stage-view { display: none; }
+        .stage-view.active { display: block; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center p-4">
 
-<div class="app-viewport">
-    <canvas id="confetti"></canvas>
-
-    <!-- Top HUD -->
-    <div class="hud-header">
-        <div class="hud-top">
-            <span class="gt-brand"><i class="fa-solid fa-cross me-1"></i> GODteachers 2030+</span>
-            <button class="sound-toggle" onclick="toggleAudio()" title="소리 켜기/끄기">
-                <i class="fa-solid fa-volume-high" id="sound-icon"></i>
-            </button>
+    <div class="w-full max-w-md glass-card rounded-3xl p-6 sm:p-8 relative">
+        
+        <!-- Progress Bar (동적 업데이트) -->
+        <div id="progress-container" class="hidden flex gap-2 mb-8 animate-fade-in">
+            <div id="prog-1" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
+            <div id="prog-2" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
+            <div id="prog-3" class="h-1.5 flex-1 rounded-full transition-all duration-500 bg-slate-200"></div>
         </div>
-        <div class="stage-indicator">
-            <div class="stage-dot active" id="dot-0"></div>
-            <div class="stage-dot" id="dot-1"></div>
-            <div class="stage-dot" id="dot-2"></div>
-            <div class="stage-dot" id="dot-3"></div>
-            <div class="stage-dot" id="dot-4"></div>
-        </div>
-    </div>
 
-    <div class="viewport-body">
-        <!-- 0. Intro View -->
-        <div class="view-section active" id="view-intro">
-            <div>
-                <div class="hero-badge"><i class="fa-solid fa-compass"></i> 교육선교 퀘스트</div>
-                <h1 class="hero-title">하나님의 심정을 품은<br>교사선교사의 여정</h1>
-                <p class="hero-desc">
-                    교육은 단순한 직업이 아닌 거룩한 소명의 현장입니다.<br>
-                    GT의 역사, 비전2030+ 핵심가치, 그리고 학교 현장의 실천적 지혜를 4단계 미션을 통해 마스터해보세요.
+        <!-- Stage 0: Intro -->
+        <div id="stage-0" class="stage-view active animate-fade-in text-center py-8">
+            <div class="w-16 h-16 bg-gradient-to-br from-gt-800 to-gt-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg rotate-3">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            </div>
+            <h1 class="text-3xl font-extrabold text-gt-900 mb-3">GT Vision 2030+</h1>
+            <p class="text-slate-500 text-sm mb-10 leading-relaxed">하나님의 심정을 품은 교사선교사 퀘스트.<br>선생님의 성함을 입력하고 여정을 시작하세요.</p>
+            <input type="text" id="user-name" placeholder="선생님의 이름" class="w-full text-center px-6 py-4 rounded-xl border-2 border-slate-200 focus:border-gt-500 focus:ring-4 focus:ring-gt-500/20 outline-none transition-all text-lg font-bold mb-4" />
+            <button onclick="nextStage(1)" class="w-full bg-gt-800 text-white py-4 rounded-xl font-bold text-lg hover:bg-gt-900 transition-colors shadow-lg shadow-gt-800/30">퀘스트 출항하기</button>
+        </div>
+
+        <!-- Stage 1: Identity -->
+        <div id="stage-1" class="stage-view animate-slide-up space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 1. 부르심의 뿌리</span>
+                <h2 class="text-2xl font-bold text-gt-900">하나님의 심정이란?</h2>
+                <p class="text-sm text-slate-500">GT 표어에 담긴 참된 의미를 찾아보세요.</p>
+            </div>
+            <div class="space-y-3 mt-8" id="stage1-options">
+                <button onclick="checkStage1(0, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">아이들의 감정에 무조건적으로 공감하는 심리적 태도</button>
+                <button onclick="checkStage1(1, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">죄로 무너진 세상을 구원하시는 하나님의 섭리와 긍휼에 반응하는 소명</button>
+                <button onclick="checkStage1(2, this)" class="w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700">학교 행정 시스템을 기독교적으로 개혁하려는 정치적 의지</button>
+            </div>
+            <div id="stage1-feedback" class="hidden p-4 rounded-xl animate-fade-in mt-4">
+                <p id="stage1-msg" class="text-sm leading-relaxed text-slate-700"></p>
+                <button id="stage1-next-btn" onclick="nextStage(2)" class="hidden mt-4 w-full bg-gt-800 text-white py-3 rounded-lg font-bold hover:bg-gt-900 transition-colors">다음 미션으로</button>
+            </div>
+        </div>
+
+        <!-- Stage 2: Vision 2030+ -->
+        <div id="stage-2" class="stage-view animate-slide-up space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 2. 비전 아키텍처</span>
+                <h2 class="text-2xl font-bold text-gt-900">비전 2030+ 매칭</h2>
+                <p class="text-sm text-slate-500">3대 핵심가치에 올바른 선언문을 연결하세요.</p>
+            </div>
+            <div class="space-y-4 mt-6">
+                <!-- 복음 -->
+                <div id="box-gospel" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
+                    <h3 class="font-bold text-lg mb-3">복음</h3>
+                    <select id="sel-gospel" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
+                        <option value="">이 가치의 선언문은 무엇입니까?</option>
+                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
+                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
+                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
+                    </select>
+                    <p id="ans-gospel" class="hidden text-sm font-bold opacity-90 text-gt-gospel">우리는 성경적 교사상을 확립한다.</p>
+                </div>
+                <!-- 양육 -->
+                <div id="box-nurture" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
+                    <h3 class="font-bold text-lg mb-3">양육</h3>
+                    <select id="sel-nurture" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
+                        <option value="">이 가치의 선언문은 무엇입니까?</option>
+                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
+                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
+                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
+                    </select>
+                    <p id="ans-nurture" class="hidden text-sm font-bold opacity-90 text-gt-nurture">우리는 교육현장의 복음화를 위하여 충성한다.</p>
+                </div>
+                <!-- 공동체 -->
+                <div id="box-community" class="p-5 rounded-2xl border-2 border-slate-200 bg-white transition-all duration-500">
+                    <h3 class="font-bold text-lg mb-3">공동체</h3>
+                    <select id="sel-community" onchange="checkStage2()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:border-gt-500">
+                        <option value="">이 가치의 선언문은 무엇입니까?</option>
+                        <option value="nurture">우리는 교육현장의 복음화를 위하여 충성한다.</option>
+                        <option value="community">우리는 하나님 나라의 확장에 헌신한다.</option>
+                        <option value="gospel">우리는 성경적 교사상을 확립한다.</option>
+                    </select>
+                    <p id="ans-community" class="hidden text-sm font-bold opacity-90 text-gt-community">우리는 하나님 나라의 확장에 헌신한다.</p>
+                </div>
+            </div>
+            <button id="stage2-next-btn" onclick="nextStage(3)" class="hidden w-full bg-gt-800 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-gt-900 transition-all animate-fade-in">파송 서약 준비 완료</button>
+        </div>
+
+        <!-- Stage 3: Pledge -->
+        <div id="stage-3" class="stage-view animate-slide-up space-y-4">
+            <div class="text-center space-y-2 mb-6">
+                <span class="text-xs font-bold text-gt-500 tracking-wider uppercase">Stage 3. 결단과 파송</span>
+                <h2 class="text-2xl font-bold text-gt-900">파송서약문</h2>
+                <div class="w-full bg-slate-200 h-2 rounded-full mt-4 overflow-hidden">
+                    <div id="pledge-progress" class="bg-gt-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+            <div class="space-y-3 max-h-[350px] overflow-y-auto hide-scroll pb-4" id="pledge-list">
+                <!-- Checkboxes generated by JS -->
+            </div>
+            <button id="stage3-next-btn" onclick="generateCert()" disabled class="w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-slate-200 text-slate-400">모든 조항에 서약해주세요</button>
+        </div>
+
+        <!-- Stage 4: Certificate -->
+        <div id="stage-4" class="stage-view animate-slide-up space-y-6">
+            <div class="bg-white p-8 rounded-2xl border-4 border-double border-gt-800 shadow-2xl relative overflow-hidden text-center">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-gt-gospel via-gt-nurture to-gt-community"></div>
+                <p class="text-xs font-bold text-slate-400 tracking-[0.2em] mb-6">COMMISSIONING CERTIFICATE</p>
+                <h1 class="text-3xl font-extrabold text-gt-900 mb-8">교사선교사 파송증서</h1>
+                <div class="mb-8">
+                    <p class="text-lg text-slate-600 mb-2">하나님의교사들(GT)</p>
+                    <p id="cert-name" class="text-2xl font-bold text-gt-500 underline decoration-2 underline-offset-8"></p>
+                </div>
+                <p class="text-sm text-slate-700 leading-loose mb-10 px-4">
+                    위 사람은 '하나님의 심정을 이어가는 교육공동체'의 비전을 품고, <br>
+                    교육현장의 복음화와 하나님 나라의 확장에 헌신할 <br>
+                    참된 교사선교사로 파송되었음을 확증합니다.
                 </p>
-                <div class="name-box">
-                    <label for="user-name">교사선교사 이름 (또는 닉네임)</label>
-                    <input type="text" id="user-name" placeholder="선생님의 이름을 입력해주세요" value="">
+                <div class="flex justify-between items-end border-t border-slate-100 pt-6">
+                    <div class="text-left">
+                        <p class="text-xs text-slate-400 font-bold">DATE</p>
+                        <p id="cert-date" class="text-sm font-semibold text-slate-700"></p>
+                    </div>
+                    <div class="w-16 h-16 rounded-full border-4 border-red-500 text-red-500 flex items-center justify-center font-black text-sm -rotate-12 opacity-80">GT<br>인장</div>
                 </div>
             </div>
-            <button class="btn-action" onclick="startQuest()">
-                비전 퀘스트 출항하기 <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <!-- 1. Stage 1: Roots & Identity (Quiz) -->
-        <div class="view-section" id="view-stage1">
-            <div>
-                <div class="quest-header">
-                    <div class="quest-category">Stage 1 · 뿌리와 부르심</div>
-                    <div class="quest-prompt">GT 표어 '하나님의 심정을 이어가는 교육공동체'에서 '심정(心情)'의 참된 의미는?</div>
-                    <div class="quest-guide">표어 및 파송선언문 해설서의 고백을 가장 올바르게 서술한 것을 고르세요.</div>
-                </div>
-                <div class="options-grid" id="opts-stage1">
-                    <div class="card-opt" onclick="evalStage1(0, this)">
-                        <div class="card-opt-icon">1</div>
-                        <div class="card-opt-text">아이들의 마음에 공감하고 친절하게 대하는 교사의 감정적 태도</div>
-                    </div>
-                    <div class="card-opt" onclick="evalStage1(1, this)">
-                        <div class="card-opt-icon">2</div>
-                        <div class="card-opt-text">죄로 인해 뒤틀린 세상을 아파하시며 구원을 진행하시는 하나님의 섭리와 안타까운 마음</div>
-                    </div>
-                    <div class="card-opt" onclick="evalStage1(2, this)">
-                        <div class="card-opt-icon">3</div>
-                        <div class="card-opt-text">동료 기독교사들과 서로 화목하고 갈등 없이 지내고자 하는 소망</div>
-                    </div>
-                </div>
-                <div class="insight-sheet" id="insight-stage1">
-                    <strong>💡 GT 영성 인사이트</strong>
-                    <span id="insight-text-stage1"></span>
-                </div>
-            </div>
-            <button class="btn-action" id="btn-next-stage1" disabled onclick="goStage(2)">
-                다음 미션으로 이동 <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <!-- 2. Stage 2: Vision 2030+ Matching Puzzle -->
-        <div class="view-section" id="view-stage2">
-            <div>
-                <div class="quest-header">
-                    <div class="quest-category">Stage 2 · 비전2030+ 아키텍처</div>
-                    <div class="quest-prompt">핵심가치(3대 기둥)에 알맞은 '비전선언'을 짝지어 연결하세요.</div>
-                    <div class="quest-guide">아래 단어 조각을 클릭한 뒤 해당하는 빈 슬롯을 채워 완성하세요.</div>
-                </div>
-
-                <div class="match-container">
-                    <div class="match-row">
-                        <div class="match-pillar p1">복 음</div>
-                        <div class="match-target" id="slot-0" onclick="assignSlot(0)">슬롯 1 선택 대기</div>
-                    </div>
-                    <div class="match-row">
-                        <div class="match-pillar p2">양 육</div>
-                        <div class="match-target" id="slot-1" onclick="assignSlot(1)">슬롯 2 선택 대기</div>
-                    </div>
-                    <div class="match-row">
-                        <div class="match-pillar p3">공 동 체</div>
-                        <div class="match-target" id="slot-2" onclick="assignSlot(2)">슬롯 3 선택 대기</div>
-                    </div>
-                </div>
-
-                <div class="match-pool" id="match-chips">
-                    <div class="match-chip" id="chip-1" onclick="selectChip('교육현장의 복음화를 위하여 충성한다', 1)">교육현장의 복음화를 위하여 충성한다</div>
-                    <div class="match-chip" id="chip-0" onclick="selectChip('우리는 성경적 교사상을 확립한다', 0)">우리는 성경적 교사상을 확립한다</div>
-                    <div class="match-chip" id="chip-2" onclick="selectChip('우리는 하나님 나라의 확장에 헌신한다', 2)">우리는 하나님 나라의 확장에 헌신한다</div>
-                </div>
-
-                <div class="insight-sheet" id="insight-stage2">
-                    <strong>💡 비전2030+ 실천축 가이드</strong>
-                    • <b>복음</b>: 말씀, 영적훈련, 공동체로 성경적 교사상 확립<br>
-                    • <b>양육</b>: 디모데, 교사, 예비교사 양육으로 현장 복음화<br>
-                    • <b>공동체</b>: 교육, 연합, 선교로 하나님 나라 확장
-                </div>
-            </div>
-            <button class="btn-action" id="btn-next-stage2" disabled onclick="goStage(3)">
-                현장 시나리오로 전진 <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <!-- 3. Stage 3: School Field Dilemma (Scenario) -->
-        <div class="view-section" id="view-stage3">
-            <div>
-                <div class="quest-header">
-                    <div class="quest-category">Stage 3 · 학교 현장과 사역</div>
-                    <div class="quest-prompt">새 학기, 지치고 방황하는 학생들과 업무 과중 속에서 GT 교사선교사가 지녀야 할 태도는?</div>
-                    <div class="quest-guide">비전2030+ 전략회의의 지향점에 가장 부합하는 선택을 고르세요.</div>
-                </div>
-                <div class="options-grid" id="opts-stage3">
-                    <div class="card-opt" onclick="evalStage3(0, this)">
-                        <div class="card-opt-icon"><i class="fa-solid fa-briefcase"></i></div>
-                        <div class="card-opt-text">학교는 직장일 뿐이므로 교내 갈등을 피해 조용히 내 수업만 마친다.</div>
-                    </div>
-                    <div class="card-opt" onclick="evalStage3(1, this)">
-                        <div class="card-opt-icon"><i class="fa-solid fa-seedling"></i></div>
-                        <div class="card-opt-text">아이를 소명으로 바라보며(디모데 양육), 동료 기독교사 및 지역 GT 공동체와 기도로 연대하여 교육실천의 지혜를 모은다.</div>
-                    </div>
-                    <div class="card-opt" onclick="evalStage3(2, this)">
-                        <div class="card-opt-icon"><i class="fa-solid fa-bullhorn"></i></div>
-                        <div class="card-opt-text">교실 환경이나 공교육 제도와 무관하게 종교적 교리 전달을 최우선 목표로 둔다.</div>
-                    </div>
-                </div>
-                <div class="insight-sheet" id="insight-stage3">
-                    <strong>💡 현장 복음화의 열쇠</strong>
-                    진정한 교육현장의 복음화는 일방적 외침이 아닌, 한 영혼을 인격적으로 돌보는 양육(디모데 양육)과 기독교사들의 유기적 연합(공동체성)을 통해 피어납니다.
-                </div>
-            </div>
-            <button class="btn-action" id="btn-next-stage3" disabled onclick="goStage(4)">
-                파송선언 결단하기 <i class="fa-solid fa-arrow-right"></i>
-            </button>
-        </div>
-
-        <!-- 4. Stage 4: Covenant & Stamping -->
-        <div class="view-section" id="view-stage4">
-            <div>
-                <div class="quest-header">
-                    <div class="quest-category">Stage 4 · 파송서약과 헌신</div>
-                    <div class="quest-prompt">GT 교사선교사 6대 서약문</div>
-                    <div class="quest-guide">마음을 다해 조항을 묵상하고 서약 도장을 날인하세요.</div>
-                </div>
-
-                <ul class="pledge-list">
-                    <li class="pledge-item"><b>1.</b> 나는 삼위일체 하나님과 신구약 66권이 진리임을 믿습니다.</li>
-                    <li class="pledge-item"><b>2.</b> 나는 예수 그리스도만이 유일한 구원의 길임을 믿습니다.</li>
-                    <li class="pledge-item"><b>3.</b> 나는 바른 신앙생활로 공동체의 덕과 하나님 나라의 영광을 드러내겠습니다.</li>
-                    <li class="pledge-item"><b>4.</b> 나는 하나님의교사들의 교사선교사로서 교육 현장의 복음화를 위해 충성하겠습니다.</li>
-                    <li class="pledge-item"><b>5.</b> 나는 하나님의교사들의 사역이 하나님의 뜻인 줄 알고 시간과 물질로 동역하겠습니다.</li>
-                    <li class="pledge-item"><b>6.</b> 나는 하나님의교사들의 회원으로서 공동체의 결정과 요구에 순종하겠습니다.</li>
-                </ul>
-
-                <div class="stamp-area">
-                    <button class="seal-button" id="stamp-btn" onclick="applySeal()">
-                        <i class="fa-solid fa-stamp fa-lg"></i>
-                        <span>서약 날인</span>
-                    </button>
-                </div>
-            </div>
-            <button class="btn-action" id="btn-finish" disabled onclick="goStage(5)">
-                모바일 파송장 발급 <i class="fa-solid fa-certificate"></i>
-            </button>
-        </div>
-
-        <!-- 5. Final Certificate Screen -->
-        <div class="view-section" id="view-final">
-            <div>
-                <div class="certificate-card">
-                    <div class="cert-header">COMMISSIONING CERTIFICATE</div>
-                    <h2 class="cert-title">교사선교사 파송증서</h2>
-                    <div class="cert-badges">
-                        <span class="cert-badge-pill">#복음</span>
-                        <span class="cert-badge-pill">#양육</span>
-                        <span class="cert-badge-pill">#공동체</span>
-                    </div>
-                    <p class="cert-body">
-                        귀하(<b id="cert-user-name">신상운 교사</b>)는 하나님께서 부르신 거룩한 교육 현장에서 '하나님의 심정을 이어가는 교육공동체'의 비전을 품고 충성할 참된 교사선교사로 파송되었음을 확인합니다.
-                    </p>
-                    <div class="cert-footer">
-                        <span id="cert-date">2026년 9월</span>
-                        <div class="cert-seal">GT<br>인장</div>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn-action" style="background: var(--gt-green);" onclick="window.print()">
-                    <i class="fa-solid fa-print"></i> 파송증서 보관 / 인쇄
-                </button>
-                <button class="btn-action" style="background: #eef2f8; color: var(--gt-deep);" onclick="location.reload()">
-                    <i class="fa-solid fa-rotate-right"></i> 처음부터 다시 도전
-                </button>
-            </div>
+            <button onclick="window.location.reload()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold hover:bg-slate-900 transition-colors">새로운 여정 다시 시작하기</button>
         </div>
 
     </div>
-</div>
 
-<script>
-    /* Audio Synthesizer (Zero External Dependencies) */
-    let audioEnabled = true;
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    <script>
+        // 전역 변수
+        let userName = "동역자";
+        let pledgeChecked = [false, false, false, false, false, false];
+        const pledges = [
+            "나는 삼위일체 하나님과 신구약 66권이 진리임을 믿습니다.",
+            "나는 예수 그리스도만이 유일한 구원의 길임을 믿습니다.",
+            "나는 바른 신앙생활로 공동체의 덕과 하나님 나라의 영광을 드러내겠습니다.",
+            "나는 교사선교사로서 교육 현장의 복음화를 위해 충성하겠습니다.",
+            "나는 사역이 하나님의 뜻인줄 알고 시간과 물질로 동역하겠습니다.",
+            "나는 GT 회원으로서 공동체의 결정과 요구에 순종하겠습니다."
+        ];
 
-    function playTone(type) {
-        if (!audioEnabled || audioCtx.state === 'suspended') {
-            audioCtx.resume();
+        function nextStage(stageNum) {
+            if (stageNum === 1) {
+                const inputName = document.getElementById('user-name').value.trim();
+                if (inputName) userName = inputName;
+                document.getElementById('progress-container').classList.remove('hidden');
+                document.getElementById('progress-container').classList.add('flex');
+            }
+            
+            // 프로그레스 바 업데이트
+            for (let i = 1; i <= 3; i++) {
+                const pBar = document.getElementById(`prog-${i}`);
+                if(pBar) pBar.className = `h-1.5 flex-1 rounded-full transition-all duration-500 ${stageNum >= i ? 'bg-gt-800' : 'bg-slate-200'}`;
+            }
+
+            // 뷰 전환
+            document.querySelectorAll('.stage-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(`stage-${stageNum}`).classList.add('active');
+
+            if (stageNum === 3) initPledgeList();
         }
-        if (!audioEnabled) return;
 
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        /* Stage 1 Logic */
+        function checkStage1(ansIdx, btnElement) {
+            const btns = document.querySelectorAll('#stage1-options button');
+            btns.forEach(b => b.disabled = true);
+            
+            const feedback = document.getElementById('stage1-feedback');
+            const msg = document.getElementById('stage1-msg');
+            const nextBtn = document.getElementById('stage1-next-btn');
 
-        const now = audioCtx.currentTime;
-        if (type === 'correct') {
-            osc.frequency.setValueAtTime(523.25, now); // C5
-            osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
-            gain.gain.setValueAtTime(0.15, now);
-            gain.gain.linearRampToValueAtTime(0, now + 0.35);
-            osc.start(now);
-            osc.stop(now + 0.35);
-        } else if (type === 'wrong') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(220, now);
-            osc.frequency.linearRampToValueAtTime(150, now + 0.25);
-            gain.gain.setValueAtTime(0.12, now);
-            gain.gain.linearRampToValueAtTime(0, now + 0.25);
-            osc.start(now);
-            osc.stop(now + 0.25);
-        } else if (type === 'fanfare') {
-            [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
-                const noteOsc = audioCtx.createOscillator();
-                const noteGain = audioCtx.createGain();
-                noteOsc.connect(noteGain);
-                noteGain.connect(audioCtx.destination);
-                noteOsc.frequency.value = freq;
-                noteGain.gain.setValueAtTime(0.1, now + i * 0.1);
-                noteGain.gain.linearRampToValueAtTime(0, now + i * 0.1 + 0.4);
-                noteOsc.start(now + i * 0.1);
-                noteOsc.stop(now + i * 0.1 + 0.4);
+            feedback.classList.remove('hidden');
+            
+            if (ansIdx === 1) { // 정답
+                btnElement.className = "w-full text-left p-4 rounded-xl border-2 transition-all font-semibold border-green-500 bg-green-50 text-green-800";
+                feedback.className = "p-4 rounded-xl animate-fade-in mt-4 bg-green-100";
+                msg.innerHTML = "정답입니다! 교육 현장을 단순 직업이 아닌 영적 소명지로 인식하는 것, 그것이 바로 교사선교사의 첫걸음입니다.[cite: 2]";
+                nextBtn.classList.remove('hidden');
+            } else {
+                btnElement.className = "w-full text-left p-4 rounded-xl border-2 transition-all font-semibold border-red-400 bg-red-50 text-red-800";
+                feedback.className = "p-4 rounded-xl animate-fade-in mt-4 bg-red-100";
+                msg.innerHTML = "아쉽습니다. 하나님의 심정은 타락한 세상을 회복하시려는 하나님의 넓고 깊은 구속사적 마음을 뜻합니다.[cite: 2]";
+                setTimeout(() => {
+                    btns.forEach(b => { b.disabled = false; b.className = "w-full text-left p-4 rounded-xl border-2 border-slate-200 hover:border-gt-500 hover:bg-slate-50 transition-all font-semibold text-slate-700"; });
+                    feedback.classList.add('hidden');
+                }, 2500);
+            }
+        }
+
+        /* Stage 2 Logic */
+        function checkStage2() {
+            const checks = ['gospel', 'nurture', 'community'];
+            let allCorrect = true;
+
+            checks.forEach(id => {
+                const sel = document.getElementById(`sel-${id}`);
+                const box = document.getElementById(`box-${id}`);
+                const ansTxt = document.getElementById(`ans-${id}`);
+                
+                if (sel.value === id) {
+                    sel.classList.add('hidden');
+                    ansTxt.classList.remove('hidden');
+                    box.classList.remove('border-slate-200', 'bg-white');
+                    box.classList.add(`border-gt-${id}`, `bg-${id === 'gospel' ? 'purple' : id === 'nurture' ? 'teal' : 'red'}-50`);
+                } else if (sel.value !== "") {
+                    allCorrect = false;
+                    alert("핵심가치에 알맞은 선언이 아닙니다. 다시 생각해보세요![cite: 3]");
+                    sel.value = "";
+                } else {
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                document.getElementById('stage2-next-btn').classList.remove('hidden');
+            }
+        }
+
+        /* Stage 3 Logic */
+        function initPledgeList() {
+            const list = document.getElementById('pledge-list');
+            list.innerHTML = '';
+            pledges.forEach((txt, i) => {
+                list.innerHTML += `
+                    <div id="pledge-item-${i}" onclick="togglePledge(${i})" class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 cursor-pointer transition-all duration-200 flex gap-4 items-start">
+                        <div id="pledge-chk-${i}" class="w-6 h-6 rounded-md border-2 border-slate-300 flex-shrink-0 flex items-center justify-center transition-colors"></div>
+                        <p id="pledge-txt-${i}" class="text-sm leading-relaxed text-slate-600">${txt}[cite: 2]</p>
+                    </div>
+                `;
             });
         }
-    }
 
-    function toggleAudio() {
-        audioEnabled = !audioEnabled;
-        const icon = document.getElementById('sound-icon');
-        icon.className = audioEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark";
-    }
+        function togglePledge(idx) {
+            pledgeChecked[idx] = !pledgeChecked[idx];
+            
+            const item = document.getElementById(`pledge-item-${idx}`);
+            const chk = document.getElementById(`pledge-chk-${idx}`);
+            const txt = document.getElementById(`pledge-txt-${idx}`);
 
-    /* State Management */
-    let userName = "동역자";
-    let selectedChipData = null;
-    let slotAssignments = [null, null, null];
+            if(pledgeChecked[idx]) {
+                item.className = "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex gap-4 items-start border-gt-500 bg-blue-50";
+                chk.className = "w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-colors bg-gt-500 border-gt-500";
+                chk.innerHTML = `<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
+                txt.className = "text-sm leading-relaxed text-gt-900 font-bold";
+            } else {
+                item.className = "p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex gap-4 items-start border-slate-200 bg-white hover:border-slate-300";
+                chk.className = "w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-colors border-slate-300";
+                chk.innerHTML = "";
+                txt.className = "text-sm leading-relaxed text-slate-600";
+            }
 
-    function startQuest() {
-        const inputVal = document.getElementById('user-name').value.trim();
-        if (inputVal) userName = inputVal;
-        goStage(1);
-    }
+            const checkedCount = pledgeChecked.filter(Boolean).length;
+            const pct = (checkedCount / 6) * 100;
+            document.getElementById('pledge-progress').style.width = `${pct}%`;
 
-    function updateHUD(stageIdx) {
-        for (let i = 0; i <= 4; i++) {
-            const dot = document.getElementById(`dot-${i}`);
-            dot.className = "stage-dot";
-            if (i < stageIdx) dot.classList.add('passed');
-            if (i === stageIdx) dot.classList.add('active');
+            const btn = document.getElementById('stage3-next-btn');
+            if(pct === 100) {
+                btn.disabled = false;
+                btn.className = "w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-gt-community text-white shadow-[0_0_20px_rgba(247,108,94,0.4)] animate-pulse-slow scale-[1.02]";
+                btn.innerText = "서약 및 파송증서 발급";
+            } else {
+                btn.disabled = true;
+                btn.className = "w-full py-4 rounded-xl font-bold text-lg transition-all duration-500 bg-slate-200 text-slate-400";
+                btn.innerText = "모든 조항에 서약해주세요";
+            }
         }
-    }
 
-    function goStage(stageNum) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        if (stageNum === 1) {
-            document.getElementById('view-stage1').classList.add('active');
-            updateHUD(1);
-        } else if (stageNum === 2) {
-            document.getElementById('view-stage2').classList.add('active');
-            updateHUD(2);
-        } else if (stageNum === 3) {
-            document.getElementById('view-stage3').classList.add('active');
-            updateHUD(3);
-        } else if (stageNum === 4) {
-            document.getElementById('view-stage4').classList.add('active');
-            updateHUD(4);
-        } else if (stageNum === 5) {
-            document.getElementById('view-final').classList.add('active');
-            updateHUD(4);
-            document.getElementById('cert-user-name').textContent = `${userName} 교사`;
+        /* Stage 4 Logic */
+        function generateCert() {
+            document.getElementById('progress-container').classList.add('hidden');
+            document.querySelectorAll('.stage-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('stage-4').classList.add('active');
+
+            document.getElementById('cert-name').innerText = `${userName} 교사`;
+            
             const today = new Date();
-            document.getElementById('cert-date').textContent = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
-            triggerConfetti();
-            playTone('fanfare');
+            document.getElementById('cert-date').innerText = `${today.getFullYear()}. ${today.getMonth()+1}. ${today.getDate()}.`;
         }
-    }
-
-    /* Stage 1 Evaluation */
-    function evalStage1(idx, card) {
-        const opts = document.querySelectorAll('#opts-stage1 .card-opt');
-        opts.forEach(o => o.style.pointerEvents = 'none');
-
-        const sheet = document.getElementById('insight-stage1');
-        const sheetText = document.getElementById('insight-text-stage1');
-        const btn = document.getElementById('btn-next-stage1');
-
-        if (idx === 1) {
-            card.classList.add('correct');
-            playTone('correct');
-            sheetText.innerHTML = "정답입니다! '하나님의 심정'은 단순 감상이 아닌, 죄로 인해 신음하는 인생을 바라보시며 구원 사역을 신실하게 이어가시는 창조주의 애끓는 섭리와 소명을 뜻합니다.";
-            btn.disabled = false;
-        } else {
-            card.classList.add('wrong');
-            opts[1].classList.add('correct');
-            playTone('wrong');
-            sheetText.innerHTML = "선택하신 내용도 소중하지만, GT 문서에서 밝히는 본질은 '죄로 물든 세상을 구원하시려는 하나님의 구속사적 섭리와 긍휼'에 깊이 반응하는 소명입니다.";
-            btn.disabled = false;
-        }
-        sheet.classList.add('show');
-    }
-
-    /* Stage 2 Matching Logic */
-    function selectChip(text, expectedIdx) {
-        selectedChipData = { text, expectedIdx };
-        document.querySelectorAll('.match-chip').forEach(c => c.style.borderColor = '#d4e0ee');
-        document.getElementById(`chip-${expectedIdx}`).style.borderColor = 'var(--gt-accent)';
-    }
-
-    function assignSlot(slotIdx) {
-        if (!selectedChipData) return;
-        
-        slotAssignments[slotIdx] = selectedChipData.expectedIdx;
-        const target = document.getElementById(`slot-${slotIdx}`);
-        target.textContent = selectedChipData.text;
-        target.classList.add('filled');
-        
-        document.getElementById(`chip-${selectedChipData.expectedIdx}`).classList.add('assigned');
-        selectedChipData = null;
-
-        // Check if all slots matched correctly
-        if (slotAssignments[0] === 0 && slotAssignments[1] === 1 && slotAssignments[2] === 2) {
-            playTone('correct');
-            document.getElementById('insight-stage2').classList.add('show');
-            document.getElementById('btn-next-stage2').disabled = false;
-        } else if (slotAssignments.every(v => v !== null)) {
-            playTone('wrong');
-            alert("일부 가치와 선언이 올바르게 짝지어지지 않았습니다. 다시 슬롯을 눌러 맞춰보세요.");
-            resetSlots();
-        }
-    }
-
-    function resetSlots() {
-        slotAssignments = [null, null, null];
-        for (let i = 0; i < 3; i++) {
-            const s = document.getElementById(`slot-${i}`);
-            s.textContent = `슬롯 ${i + 1} 선택 대기`;
-            s.classList.remove('filled');
-            document.getElementById(`chip-${i}`).classList.remove('assigned');
-        }
-    }
-
-    /* Stage 3 Evaluation */
-    function evalStage3(idx, card) {
-        const opts = document.querySelectorAll('#opts-stage3 .card-opt');
-        opts.forEach(o => o.style.pointerEvents = 'none');
-        const sheet = document.getElementById('insight-stage3');
-        const btn = document.getElementById('btn-next-stage3');
-
-        if (idx === 1) {
-            card.classList.add('correct');
-            playTone('correct');
-        } else {
-            card.classList.add('wrong');
-            opts[1].classList.add('correct');
-            playTone('wrong');
-        }
-        sheet.classList.add('show');
-        btn.disabled = false;
-    }
-
-    /* Stage 4 Sealing */
-    function applySeal() {
-        const btn = document.getElementById('stamp-btn');
-        btn.classList.add('stamped');
-        btn.innerHTML = `<i class="fa-solid fa-check fa-lg"></i><span>서약 완료</span>`;
-        playTone('correct');
-        document.getElementById('btn-finish').disabled = false;
-    }
-
-    /* Confetti Engine */
-    function triggerConfetti() {
-        const canvas = document.getElementById('confetti');
-        const ctx = canvas.getContext('2d');
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-
-        const particles = Array.from({ length: 50 }, () => ({
-            x: canvas.width / 2,
-            y: canvas.height / 2,
-            vx: (Math.random() - 0.5) * 8,
-            vy: (Math.random() - 1) * 8 - 2,
-            size: Math.random() * 6 + 4,
-            color: ['#1b3b6f', '#f76c5e', '#48a999', '#8367c7', '#ffd166'][Math.floor(Math.random() * 5)]
-        }));
-
-        let frames = 0;
-        function render() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.2; // gravity
-                ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, p.size, p.size);
-            });
-            if (frames++ < 120) requestAnimationFrame(render);
-        }
-        render();
-    }
-</script>
-
+    </script>
 </body>
 </html>
